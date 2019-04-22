@@ -12,7 +12,7 @@ let favoriteArr = [];
 
 
 function queryApi() {
-    const queryUser = inputEl.value;    
+    const queryUser = inputEl.value;
     // nos conectaremos a una api de series dónde se buscará lo que el usuario introduzca en el campo de búsqueda
     fetch(apiUrl + queryUser)
         .then(response => response.json())
@@ -20,7 +20,7 @@ function queryApi() {
             for (const info of data) {
                 const {show} = info;
                 const nameSerie = show.name;
-                const imageSerie = show.image;                
+                const imageSerie = show.image;
 
                 if(imageSerie === null){
                     paintSeries(nameSerie, imageDefault);
@@ -44,7 +44,7 @@ function selectedFavoriteSerie(serieEl, nameSerieFavorite, imageSerieFavorite) {
 
     favoriteArr.push(serieObj);
     console.log('arr',favoriteArr);
-    paintFavorites(nameSerieFavorite, imageSerieFavorite)
+    paintFavorites(nameSerieFavorite, imageSerieFavorite);
 }
 
 function paintFavorites(nameFav, imageFav) {
@@ -69,7 +69,7 @@ function createElement(element) {
 function paintSeries(name, image) {
     // pintar una tarjeta:
     const serieEl = createElement('li');
-    
+
     // título de la serie
     const titleSerieEl = createElement('h2');
     const titleSerie = document.createTextNode(name);
@@ -97,8 +97,8 @@ function handleButtonClick(e) {
     e.preventDefault();
     listSeriesEl.innerHTML = '';
     queryApi();
-    
+
 }
 
-// al hacer click en el botón de buscar 
+// al hacer click en el botón de buscar
 buttonEl.addEventListener('click', handleButtonClick);
