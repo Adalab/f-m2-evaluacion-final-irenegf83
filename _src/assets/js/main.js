@@ -7,7 +7,7 @@ const listSeriesEl = document.querySelector('.series__search');
 
 const apiUrl = 'http://api.tvmaze.com/search/shows?q=';
 const imageDefault = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
-let favoriteArr = [];
+const favoriteArr = [];
 
 
 function queryApi() {
@@ -50,21 +50,22 @@ function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite) {
     paintFavorites(nameSerieFavorite, imageSerieFavorite);
 }
 
-function savedLocalStorage(array) {
-    // añadirlas en la caché local (LS)
-    localStorage.setItem('favoriteArr', JSON.stringify(array));
-}
+// añadirlas en la caché local (LS)
+const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stringify(array));
 
 const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
 
 function paintFavorites(nameFav, imageFav) {
     const serieFavEl = createElement('li');
+    serieFavEl.classList.add('favorites');
     // título de la serie
     const titleFavEl = createElement('h4');
+    titleFavEl.classList.add('favorites__title');
     const titleFav = document.createTextNode(nameFav);
     titleFavEl.appendChild(titleFav);
     // imagen de la serie
     const imageFavEl = createElement('img');
+    imageFavEl.classList.add('favorites__image');
     imageFavEl.setAttribute('src', imageFav);
     // añado todo el contenido a sus madres
     serieFavEl.appendChild(imageFavEl);
@@ -103,14 +104,11 @@ function paintSeries(name, image) {
     });
 }
 
-
-// se guardan el LocalStorage y al recargar página siempre se verán
-function reload() {
+function reloadPage() {
     // si la chaché tiene datos pintalos
     if (savedFavSeries) {
         console.log('la caché tiene cosicas');
         for (const data of savedFavSeries) {
-            // console.log(data.name);
             paintFavorites(data.name, data.image);
         }
     } else {
@@ -118,7 +116,7 @@ function reload() {
     }
 }
 
-reload();
+reloadPage();
 
 function handleButtonClick(e) {
     e.preventDefault();
