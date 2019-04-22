@@ -10,7 +10,6 @@ const imageDefault = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV
 let favoriteArr = [];
 
 
-
 function queryApi() {
     const queryUser = inputEl.value;
     // nos conectaremos a una api de series dónde se buscará lo que el usuario introduzca en el campo de búsqueda
@@ -32,20 +31,31 @@ function queryApi() {
         .catch(error => console.log(`Tienes un error por aquí: ${error}`));
 }
 
-function selectedFavoriteSerie(serieEl, nameSerieFavorite, imageSerieFavorite) {
-    // si hago click en una serie le añado la clase favorite y si vuelvo a pulsar se la quito
-    serieEl.classList.toggle('favorite');
+const createElement = element  => document.createElement(element);
 
+// si hago click en una serie le añado la clase favorite y si vuelvo a pulsar se la quito
+const selectedFavoriteSerie = serieEl => serieEl.classList.toggle('favorite');
+
+function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite) {
     // las marcadas se guardarán en un array (en un objeto cada una)
     const serieObj = {
         name: nameSerieFavorite,
         image: imageSerieFavorite,
     };
 
+    // al hacer nueva búsqueda los favoritos se van acumulando
     favoriteArr.push(serieObj);
-    console.log('arr',favoriteArr);
+    // console.log('arr',favoriteArr);
+
     paintFavorites(nameSerieFavorite, imageSerieFavorite);
 }
+
+function savedLocalStorage(array) {
+    // añadirlas en la caché local (LS)
+    localStorage.setItem('favoriteArr', JSON.stringify(array));
+}
+
+const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
 
 function paintFavorites(nameFav, imageFav) {
     const serieFavEl = createElement('li');
@@ -60,10 +70,6 @@ function paintFavorites(nameFav, imageFav) {
     serieFavEl.appendChild(imageFavEl);
     serieFavEl.appendChild(titleFavEl);
     favoriteSeriesEl.appendChild(serieFavEl);
-}
-
-function createElement(element) {
-    return document.createElement(element);
 }
 
 function paintSeries(name, image) {
@@ -82,22 +88,42 @@ function paintSeries(name, image) {
     serieEl.appendChild(titleSerieEl);
     listSeriesEl.appendChild(serieEl);
 
-    // al hacer click en una serie se marca como favorita
+    // al hacer click en una serie:
+    //se marca como favorita
     serieEl.addEventListener('click', function() {
-        selectedFavoriteSerie(serieEl, name, image);
+        selectedFavoriteSerie(serieEl);
+    });
+    // se guarda en un array
+    serieEl.addEventListener('click', function() {
+        savedArrayFavorites(name, image);
+    });
+    // se guarda en LocalStorage
+    serieEl.addEventListener('click', function() {
+        savedLocalStorage(favoriteArr);
     });
 }
 
 
-// la seire favorita se mostrarán en el lado izquierdo de la pantalla (debajo del formulario)
-// al hacer nueva búsqueda los favoritos se van acumulando
 // se guardan el LocalStorage y al recargar página siempre se verán
+function reload() {
+    // si la chaché tiene datos pintalos
+    if (savedFavSeries) {
+        console.log('la caché tiene cosicas');
+        for (const data of savedFavSeries) {
+            // console.log(data.name);
+            paintFavorites(data.name, data.image);
+        }
+    } else {
+        console.log('la caché está vacía');
+    }
+}
+
+reload();
 
 function handleButtonClick(e) {
     e.preventDefault();
     listSeriesEl.innerHTML = '';
     queryApi();
-
 }
 
 // al hacer click en el botón de buscar
