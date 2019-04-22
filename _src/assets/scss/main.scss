@@ -1,6 +1,23 @@
 @import 'core/settings';
 
 body {
-	height: 100vh;
 	font-size: 18px;
+}
+.series {
+	display: grid;
+	grid-template-columns: 300px 1fr;
+	&__highlight {
+		// background-color: blue;
+		
+	}
+	&__favorites {
+	}
+	&__search {
+		// background-color: pink;
+	}
+}
+
+.favorite {
+	background-color: crimson;
+	color: white;
 }
