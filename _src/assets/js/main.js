@@ -25,7 +25,6 @@ function queryApi() {
                 const imageSerie = show.image;
                 const idSerie = show.id;
 
-
                 if(!imageSerie){
                     paintSeries(nameSerie, imageDefault, idSerie);
                 } else {
@@ -48,24 +47,6 @@ const selectedFavoriteSerie = serieEl => {
         serieEl.classList.add('favorite');
     }
 };
-
-/*function deleteFavorites() {
-    // console.log(favoriteArr.includes(id));
-
-    // si en el array algún objeto que tengan la misma id no se añade y se borra
-    for (const element of favoriteArr) {
-        console.log(element);
-
-        if(element.id) {
-            console.log('exite la id', element.id);
-            favoriteArr.splice(element);
-        } else {
-            //         console.log('NO exite la id');
-        }
-    }
-    console.log('array', savedFavSeries);
-
-}*/
 
 // añadirlas en la caché local (LS)
 const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stringify(array));
@@ -123,12 +104,30 @@ function paintFavorites(nameFav, imageFav, idFav) {
     favoriteSeriesEl.appendChild(serieFavEl);
 
     deleteEl.addEventListener('click', deleteSerieFav);
+    deleteEl.addEventListener('click', function() {
+        deleteObjArray(savedFavSeries, idFav);
+    });
 }
 
 function deleteSerieFav(e) {
+    // borra el elemento <li> de la papelera que ha sido pulsada
     const serieToDelete = e.currentTarget.parentElement;
-    serieToDelete.outerHTML = '';
-    
+    // serieToDelete.outerHTML = '';
+}
+
+function deleteObjArray(array, id) {
+    console.log('array', array);
+
+    for (let i = 0; i < array.length; i++) {
+        if(id === array[i].id) {
+            // console.log('la id es igual', id, '=',  array[i].id);
+            // borra del array la posición indicada
+            array.splice(i, 1);
+        } else {
+            // console.log('mmmeeecc', id, '!=',  array[i].id);
+        }
+    }
+    console.log('array final', array);
 }
 
 function paintSeries(name, image, id) {
@@ -170,7 +169,7 @@ function reloadPage() {
     // si la chaché tiene datos pintalos
     if (savedFavSeries) {
         for (const data of savedFavSeries) {
-            paintFavorites(data.name, data.image);
+            paintFavorites(data.name, data.image, data.id);
         }
     } else {
         console.log('la caché está vacía');
