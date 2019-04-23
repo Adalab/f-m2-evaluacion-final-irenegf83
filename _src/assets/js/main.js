@@ -13,7 +13,7 @@ const favoriteArr = [];
 
 function queryApi() {
     const queryUser = inputEl.value;
-    
+
     fetch(apiUrl + queryUser)
         .then(response => response.json())
         .then(data => {
@@ -63,8 +63,6 @@ function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavor
 }*/
 
 function paintFavorites(nameFav, imageFav, idFav) {
-    // si el array ya tienes cosas de antes mantenerlas y pintar las nuevas
-
     const serieFavEl = createElement('li');
     serieFavEl.classList.add('favorites');
     serieFavEl.setAttribute('data-id', idFav);
@@ -93,7 +91,7 @@ function paintFavorites(nameFav, imageFav, idFav) {
 
     deleteEl.addEventListener('click', deleteSerieFav);
     deleteEl.addEventListener('click', function() {
-        deleteObjArray(savedFavSeriesArr, idFav);
+        deleteObjOfArray(savedFavSeriesArr, idFav);
     });
 }
 
@@ -102,7 +100,7 @@ function deleteSerieFav(e) {
     serieToDelete.outerHTML = '';
 }
 
-function deleteObjArray(array, id) {
+function deleteObjOfArray(array, id) {
     for (let i = 0; i < array.length; i++) {
         if(id === array[i].id) {
             array.splice(i, 1);
