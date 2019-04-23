@@ -22,11 +22,13 @@ function queryApi() {
                 const {show} = info;
                 const nameSerie = show.name;
                 const imageSerie = show.image;
+                const idSerie = show.id;
+                
 
                 if(!imageSerie){
-                    paintSeries(nameSerie, imageDefault);
+                    paintSeries(nameSerie, imageDefault, idSerie);
                 } else {
-                    paintSeries(nameSerie, imageSerie.medium);
+                    paintSeries(nameSerie, imageSerie.medium, idSerie);
                 }
             }
         })
@@ -36,20 +38,23 @@ function queryApi() {
 const createElement = element  => document.createElement(element);
 
 // si hago click en una serie le añado la clase favorite y si vuelvo a pulsar se la quito
-const selectedFavoriteSerie = serieEl => serieEl.classList.toggle('favorite');
+const selectedFavoriteSerie = (serieEl) => {
+    serieEl.classList.add('favorite');
+};
 
-function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite) {
+function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite) {
     // las marcadas se guardarán en un array (en un objeto cada una)
     const serieObj = {
         name: nameSerieFavorite,
         image: imageSerieFavorite,
+        id: idSerieFavorite,
     };
 
     // al hacer nueva búsqueda los favoritos se van acumulando
     favoriteArr.push(serieObj);
     // console.log('arr',favoriteArr);
 
-    paintFavorites(nameSerieFavorite, imageSerieFavorite);
+    paintFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite);
 }
 
 // añadirlas en la caché local (LS)
@@ -57,9 +62,10 @@ const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stri
 
 const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
 
-function paintFavorites(nameFav, imageFav) {
+function paintFavorites(nameFav, imageFav, idFav) {
     const serieFavEl = createElement('li');
     serieFavEl.classList.add('favorites');
+    serieFavEl.setAttribute('data-idFav', idFav);
     // título de la serie
     const titleFavEl = createElement('h4');
     titleFavEl.classList.add('favorites__title');
@@ -75,10 +81,11 @@ function paintFavorites(nameFav, imageFav) {
     favoriteSeriesEl.appendChild(serieFavEl);
 }
 
-function paintSeries(name, image) {
+function paintSeries(name, image, id) {
     // pintar una tarjeta:
     const serieEl = createElement('li');
     serieEl.classList.add('search');
+    serieEl.setAttribute('data-id', id);
 
     // título de la serie
     const titleSerieEl = createElement('h2');
@@ -96,11 +103,11 @@ function paintSeries(name, image) {
     // al hacer click en una serie:
     //se marca como favorita
     serieEl.addEventListener('click', function() {
-        selectedFavoriteSerie(serieEl);
+        selectedFavoriteSerie(serieEl, id);
     });
     // se guarda en un array
     serieEl.addEventListener('click', function() {
-        savedArrayFavorites(name, image);
+        savedArrayFavorites(name, image, id);
     });
     // se guarda en LocalStorage
     serieEl.addEventListener('click', function() {
