@@ -152,7 +152,7 @@ function paintSeries(name, image, id) {
 }
 
 function reloadPage() {
-    if (savedFavSeriesArr) {
+    if(savedFavSeriesArr) {
         for (const data of savedFavSeriesArr) {
             paintFavorites(data.name, data.image, data.id);
         }
