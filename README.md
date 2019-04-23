@@ -1,5 +1,5 @@
 # Ejercicio evaluación final - Irene Gómez
-Este ejercicio consiste en hacer un buscador de series con una API externa.
+Este ejercicio consiste en hacer un buscador de series consultando una API externa.
 
 ## Como funciona
 - Escribe la serie que deseas buscar en el campo de búsqueda y dale al botón de buscar.
