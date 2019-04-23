@@ -3,6 +3,7 @@
 // elementos del HTML
 const inputEl = document.querySelector('#form-search__input');
 const buttonEl = document.querySelector('.form-search__button');
+const containerFavEl = document.querySelector('.series__highlight');
 const favoriteSeriesEl = document.querySelector('.series__favorites');
 const listSeriesEl = document.querySelector('.series__search');
 
@@ -38,7 +39,7 @@ function queryApi() {
 const createElement = element  => document.createElement(element);
 
 // si hago click en una serie le añado la clase favorite y si vuelvo a pulsar se la quito
-const selectedFavoriteSerie = (serieEl) => {
+const selectedFavoriteSerie = serieEl => {
     // const {id} = serieEl.dataset;
     if(serieEl.classList.contains('favorite')){
         serieEl.classList.remove('favorite');
@@ -48,23 +49,28 @@ const selectedFavoriteSerie = (serieEl) => {
     }
 };
 
-function deleteFavorites() {
+/*function deleteFavorites() {
     // console.log(favoriteArr.includes(id));
-    
+
     // si en el array algún objeto que tengan la misma id no se añade y se borra
     for (const element of favoriteArr) {
         console.log(element);
-        
+
         if(element.id) {
             console.log('exite la id', element.id);
             favoriteArr.splice(element);
         } else {
-    //         console.log('NO exite la id');
+            //         console.log('NO exite la id');
         }
     }
-    console.log('array', favoriteArr);
+    console.log('array', savedFavSeries);
 
-}
+}*/
+
+// añadirlas en la caché local (LS)
+const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stringify(array));
+
+const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
 
 function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite) {
     // las marcadas se guardarán en un array (en un objeto cada una)
@@ -80,10 +86,14 @@ function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavor
     paintFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite);
 }
 
-// añadirlas en la caché local (LS)
-const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stringify(array));
-
-const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
+/*function createBtnDeleteAll() {
+    //creo el botón de borrar todo
+    const btnDeleteAllEl = createElement('button');
+    btnDeleteAllEl.classList.add('btn__delete');
+    btnDeleteAllEl.innerHTML = 'Eliminar series';
+    containerFavEl.appendChild(btnDeleteAllEl);
+    btnDeleteAllEl.addEventListener('click', deleteAllSeries);
+}*/
 
 function paintFavorites(nameFav, imageFav, idFav) {
     const serieFavEl = createElement('li');
@@ -91,7 +101,7 @@ function paintFavorites(nameFav, imageFav, idFav) {
     serieFavEl.setAttribute('data-id', idFav);
     // creo un wrapper para la imagen y el título
     const wrapperSerie = createElement('div');
-    wrapperSerie.classList.add('wrapper__serie-fav')
+    wrapperSerie.classList.add('wrapper__serie-fav');
     // título de la serie
     const titleFavEl = createElement('h4');
     titleFavEl.classList.add('favorites__title');
@@ -101,7 +111,8 @@ function paintFavorites(nameFav, imageFav, idFav) {
     const imageFavEl = createElement('img');
     imageFavEl.classList.add('favorites__image');
     imageFavEl.setAttribute('src', imageFav);
-    // añado el elemento de borrar película
+    imageFavEl.alt = `Portada serie "${nameFav}"`;
+    // añado el elemento de borrar series
     const deleteEl = createElement('i');
     deleteEl.classList.add('far', 'fa-trash-alt');
     // añado todo el contenido a sus madres
@@ -110,6 +121,14 @@ function paintFavorites(nameFav, imageFav, idFav) {
     serieFavEl.appendChild(wrapperSerie);
     serieFavEl.appendChild(deleteEl);
     favoriteSeriesEl.appendChild(serieFavEl);
+
+    deleteEl.addEventListener('click', deleteSerieFav);
+}
+
+function deleteSerieFav(e) {
+    const serieToDelete = e.currentTarget.parentElement;
+    serieToDelete.outerHTML = '';
+    
 }
 
 function paintSeries(name, image, id) {
@@ -126,6 +145,7 @@ function paintSeries(name, image, id) {
     // imagen de la serie
     const imageSerieEl = createElement('img');
     imageSerieEl.setAttribute('src', image);
+    imageSerieEl.alt = `Portada serie "${name}"`;
     // añado todo el contenido a sus madres
     serieEl.appendChild(imageSerieEl);
     serieEl.appendChild(titleSerieEl);

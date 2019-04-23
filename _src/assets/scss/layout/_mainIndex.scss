@@ -58,3 +58,18 @@
 	background-color: $silver;
 	color: $white-snow;
 }
+
+.btn__delete {
+    cursor: pointer;
+    padding: 10px 15px;
+    font-family: $font-principal;
+    font-size: $font-sizeDefault;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: $light-silver;
+    color: $purple-grape;
+    &:hover {
+        background-color: $purple-grape;
+        color: $light-silver;
+    }
+}
