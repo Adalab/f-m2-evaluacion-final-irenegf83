@@ -23,7 +23,7 @@ function queryApi() {
                 const nameSerie = show.name;
                 const imageSerie = show.image;
                 const idSerie = show.id;
-                
+
 
                 if(!imageSerie){
                     paintSeries(nameSerie, imageDefault, idSerie);
@@ -39,8 +39,32 @@ const createElement = element  => document.createElement(element);
 
 // si hago click en una serie le añado la clase favorite y si vuelvo a pulsar se la quito
 const selectedFavoriteSerie = (serieEl) => {
-    serieEl.classList.add('favorite');
+    // const {id} = serieEl.dataset;
+    if(serieEl.classList.contains('favorite')){
+        serieEl.classList.remove('favorite');
+        deleteFavorites();
+    } else {
+        serieEl.classList.add('favorite');
+    }
 };
+
+function deleteFavorites() {
+    // console.log(favoriteArr.includes(id));
+    
+    // si en el array algún objeto que tengan la misma id no se añade y se borra
+    for (const element of favoriteArr) {
+        console.log(element);
+        
+        if(element.id) {
+            console.log('exite la id', element.id);
+            favoriteArr.splice(element);
+        } else {
+    //         console.log('NO exite la id');
+        }
+    }
+    console.log('array', favoriteArr);
+
+}
 
 function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite) {
     // las marcadas se guardarán en un array (en un objeto cada una)
@@ -52,7 +76,6 @@ function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavor
 
     // al hacer nueva búsqueda los favoritos se van acumulando
     favoriteArr.push(serieObj);
-    // console.log('arr',favoriteArr);
 
     paintFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite);
 }
@@ -65,7 +88,10 @@ const savedFavSeries = JSON.parse(localStorage.getItem('favoriteArr'));
 function paintFavorites(nameFav, imageFav, idFav) {
     const serieFavEl = createElement('li');
     serieFavEl.classList.add('favorites');
-    serieFavEl.setAttribute('data-idFav', idFav);
+    serieFavEl.setAttribute('data-id', idFav);
+    // creo un wrapper para la imagen y el título
+    const wrapperSerie = createElement('div');
+    wrapperSerie.classList.add('wrapper__serie-fav')
     // título de la serie
     const titleFavEl = createElement('h4');
     titleFavEl.classList.add('favorites__title');
@@ -75,9 +101,14 @@ function paintFavorites(nameFav, imageFav, idFav) {
     const imageFavEl = createElement('img');
     imageFavEl.classList.add('favorites__image');
     imageFavEl.setAttribute('src', imageFav);
+    // añado el elemento de borrar película
+    const deleteEl = createElement('i');
+    deleteEl.classList.add('far', 'fa-trash-alt');
     // añado todo el contenido a sus madres
-    serieFavEl.appendChild(imageFavEl);
-    serieFavEl.appendChild(titleFavEl);
+    wrapperSerie.appendChild(imageFavEl);
+    wrapperSerie.appendChild(titleFavEl);
+    serieFavEl.appendChild(wrapperSerie);
+    serieFavEl.appendChild(deleteEl);
     favoriteSeriesEl.appendChild(serieFavEl);
 }
 
@@ -103,7 +134,7 @@ function paintSeries(name, image, id) {
     // al hacer click en una serie:
     //se marca como favorita
     serieEl.addEventListener('click', function() {
-        selectedFavoriteSerie(serieEl, id);
+        selectedFavoriteSerie(serieEl);
     });
     // se guarda en un array
     serieEl.addEventListener('click', function() {
@@ -118,7 +149,6 @@ function paintSeries(name, image, id) {
 function reloadPage() {
     // si la chaché tiene datos pintalos
     if (savedFavSeries) {
-        console.log('la caché tiene cosicas');
         for (const data of savedFavSeries) {
             paintFavorites(data.name, data.image);
         }

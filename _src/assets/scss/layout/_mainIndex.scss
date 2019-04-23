@@ -1,6 +1,6 @@
 .series {
     display: grid;
-    grid-gap: 20px;
+    grid-gap: 40px;
     grid-template-columns: 280px 1fr;
 	&__search {
         display: flex;
@@ -21,6 +21,7 @@
 
 .favorites {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
     &__title {
@@ -29,6 +30,19 @@
     &__image {
         height: 120px;
         margin-right: 20px;
+    }
+}
+
+.wrapper__serie-fav {
+    display: flex;
+    align-items: center;
+}
+
+.fa-trash-alt {
+    cursor: pointer;
+    margin-left: 20px;
+    &:hover {
+        color: crimson;
     }
 }
 
