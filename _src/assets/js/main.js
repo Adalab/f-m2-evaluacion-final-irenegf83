@@ -1,12 +1,14 @@
 'use strict';
 
+// elementos del HTML
 const inputEl = document.querySelector('#form-search__input');
 const buttonEl = document.querySelector('.form-search__button');
 const favoriteSeriesEl = document.querySelector('.series__favorites');
 const listSeriesEl = document.querySelector('.series__search');
 
+// constantes/variables
 const apiUrl = 'http://api.tvmaze.com/search/shows?q=';
-const imageDefault = 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV';
+const imageDefault = 'https://via.placeholder.com/210x295/eeeeee/666666/?text=TV';
 const favoriteArr = [];
 
 
@@ -21,7 +23,7 @@ function queryApi() {
                 const nameSerie = show.name;
                 const imageSerie = show.image;
 
-                if(imageSerie === null){
+                if(!imageSerie){
                     paintSeries(nameSerie, imageDefault);
                 } else {
                     paintSeries(nameSerie, imageSerie.medium);
@@ -76,9 +78,11 @@ function paintFavorites(nameFav, imageFav) {
 function paintSeries(name, image) {
     // pintar una tarjeta:
     const serieEl = createElement('li');
+    serieEl.classList.add('search');
 
     // título de la serie
     const titleSerieEl = createElement('h2');
+    titleSerieEl.classList.add('search__title');
     const titleSerie = document.createTextNode(name);
     titleSerieEl.appendChild(titleSerie);
     // imagen de la serie

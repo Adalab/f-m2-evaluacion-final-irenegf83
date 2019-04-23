@@ -7,7 +7,9 @@
 body {
     font-family: $font-principal;
     font-weight: $font-weightDefault;
-	font-size: $font-sizeDefault;
+    font-size: $font-sizeDefault;
+    color: $black-knight;
+    padding: 0 30px;
 }
 
 input {
