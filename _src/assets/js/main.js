@@ -53,15 +53,6 @@ function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavor
     paintFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite);
 }
 
-/*function createBtnDeleteAll() {
-    //creo el botón de borrar todo
-    const btnDeleteAllEl = createElement('button');
-    btnDeleteAllEl.classList.add('btn__delete');
-    btnDeleteAllEl.innerHTML = 'Eliminar series';
-    containerFavEl.appendChild(btnDeleteAllEl);
-    btnDeleteAllEl.addEventListener('click', deleteAllSeries);
-}*/
-
 function paintFavorites(nameFav, imageFav, idFav) {
     const serieFavEl = createElement('li');
     serieFavEl.classList.add('favorites');
@@ -109,6 +100,28 @@ function deleteObjOfArray(array, id) {
     savedLocalStorage(array);
 }
 
+function createBtnDeleteAll() {
+    const btnDeleteAllEl = createElement('button');
+    btnDeleteAllEl.classList.add('btn__delete');
+    btnDeleteAllEl.innerHTML = 'Eliminar series';
+    containerFavEl.appendChild(btnDeleteAllEl);
+
+    btnDeleteAllEl.addEventListener('click', deleteAllSeries);
+    btnDeleteAllEl.addEventListener('click', function() {
+        deleteAllObjOfArray(savedFavSeriesArr);
+    });
+}
+
+function deleteAllObjOfArray(array) {
+    array = [];
+    savedLocalStorage(array);
+}
+
+function deleteAllSeries(e) {
+    const listDelete = e.currentTarget.previousElementSibling;
+    listDelete.innerHTML = '';
+}
+
 function paintSeries(name, image, id) {
     const serieEl = createElement('li');
     serieEl.classList.add('search');
@@ -143,6 +156,7 @@ function reloadPage() {
         for (const data of savedFavSeriesArr) {
             paintFavorites(data.name, data.image, data.id);
         }
+        createBtnDeleteAll();
     }
 }
 

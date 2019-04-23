@@ -61,13 +61,16 @@
 
 .btn__delete {
     cursor: pointer;
+    width: 100%;
     padding: 10px 15px;
+    border: 2px solid $purple-grape;
     font-family: $font-principal;
     font-size: $font-sizeDefault;
     font-weight: 600;
     text-transform: uppercase;
     background-color: $light-silver;
     color: $purple-grape;
+    margin-bottom: 50px;
     &:hover {
         background-color: $purple-grape;
         color: $light-silver;
