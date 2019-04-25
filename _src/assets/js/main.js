@@ -5,6 +5,7 @@ const buttonEl = document.querySelector('.form-search__button');
 const containerFavEl = document.querySelector('.series__highlight');
 const favoriteSeriesEl = document.querySelector('.series__favorites');
 const listSeriesEl = document.querySelector('.series__search');
+const btnLogEl = document.querySelector('.log');
 
 const apiUrl = 'http://api.tvmaze.com/search/shows?q=';
 const imageDefault = 'https://via.placeholder.com/210x295/eeeeee/666666/?text=TV';
@@ -22,11 +23,14 @@ function queryApi() {
                 const nameSerie = show.name;
                 const imageSerie = show.image;
                 const idSerie = show.id;
+                // console.log(show);
+                const statusSerie = show.status;
+                
 
                 if(!imageSerie){
-                    paintSeries(nameSerie, imageDefault, idSerie);
+                    paintSeries(nameSerie, imageDefault, idSerie, statusSerie);
                 } else {
-                    paintSeries(nameSerie, imageSerie.medium, idSerie);
+                    paintSeries(nameSerie, imageSerie.medium, idSerie, statusSerie);
                 }
             }
         })
@@ -122,7 +126,7 @@ function deleteAllSeries(e) {
     listDelete.innerHTML = '';
 }
 
-function paintSeries(name, image, id) {
+function paintSeries(name, image, id, status) {
     const serieEl = createElement('li');
     serieEl.classList.add('search');
     serieEl.setAttribute('data-id', id);
@@ -136,8 +140,15 @@ function paintSeries(name, image, id) {
     imageSerieEl.setAttribute('src', image);
     imageSerieEl.alt = `Portada serie "${name}"`;
 
+    const statusEl = createElement('p');
+    const statusText = document.createTextNode(status);
+    statusEl.appendChild(statusText);
+
+
     serieEl.appendChild(imageSerieEl);
     serieEl.appendChild(titleSerieEl);
+    serieEl.appendChild(statusEl);
+
     listSeriesEl.appendChild(serieEl);
 
     serieEl.addEventListener('click', function() {
@@ -167,5 +178,24 @@ function handleButtonClick(e) {
     listSeriesEl.innerHTML = '';
     queryApi();
 }
+
+
+function handleLog() {
+    const elementSerie = favoriteSeriesEl.children;
+
+    for(const element of elementSerie){
+        
+        console.log(element.querySelector('.favorites__title').innerHTML);
+        
+    }
+    // for (const serie of favoriteArr) {
+    //     console.log(serie.name);
+        
+    // }
+    
+}
+
+
+btnLogEl.addEventListener('click', handleLog);
 
 buttonEl.addEventListener('click', handleButtonClick);
