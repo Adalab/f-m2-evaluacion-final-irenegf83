@@ -8,7 +8,7 @@ const listSeriesEl = document.querySelector('.series__search');
 
 const apiUrl = 'http://api.tvmaze.com/search/shows?q=';
 const imageDefault = 'https://via.placeholder.com/210x295/eeeeee/666666/?text=TV';
-const favoriteArr = [];
+let favoriteArr = JSON.parse(localStorage.getItem('favoriteArr')) || [];
 
 
 function queryApi() {
@@ -37,39 +37,40 @@ const createElement = element  => document.createElement(element);
 
 const selectedFavoriteSerie = serieEl => serieEl.classList.toggle('favorite');
 
-const savedLocalStorage = array => localStorage.setItem('favoriteArr', JSON.stringify(array));
+const savedLocalStorage = () => localStorage.setItem('favoriteArr', JSON.stringify(favoriteArr));
 
-const savedFavSeriesArr = JSON.parse(localStorage.getItem('favoriteArr'));
+function savedArrayFavorites(id, serieLi) {
+    const titleEl = serieLi.querySelector('.search__title');
+    const imgEl = serieLi.querySelector('.search__img');
 
-function savedArrayFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite) {
     const serieObj = {
-        name: nameSerieFavorite,
-        image: imageSerieFavorite,
-        id: idSerieFavorite,
+        name: titleEl.innerHTML,
+        image: imgEl.src,
+        id: id,
     };
 
     favoriteArr.push(serieObj);
 
-    paintFavorites(nameSerieFavorite, imageSerieFavorite, idSerieFavorite);
+    paintFavorites(serieObj);
 }
 
-function paintFavorites(nameFav, imageFav, idFav) {
+function paintFavorites(item) {
     const serieFavEl = createElement('li');
     serieFavEl.classList.add('favorites');
-    serieFavEl.setAttribute('data-id', idFav);
+    serieFavEl.setAttribute('data-id', item.id);
 
     const wrapperSerie = createElement('div');
     wrapperSerie.classList.add('wrapper__serie-fav');
 
     const titleFavEl = createElement('h4');
     titleFavEl.classList.add('favorites__title');
-    const titleFav = document.createTextNode(nameFav);
+    const titleFav = document.createTextNode(item.name);
     titleFavEl.appendChild(titleFav);
 
     const imageFavEl = createElement('img');
     imageFavEl.classList.add('favorites__image');
-    imageFavEl.setAttribute('src', imageFav);
-    imageFavEl.alt = `Portada serie "${nameFav}"`;
+    imageFavEl.setAttribute('src', item.image);
+    imageFavEl.alt = `Portada serie "${item.name}"`;
 
     const deleteEl = createElement('i');
     deleteEl.classList.add('far', 'fa-trash-alt');
@@ -80,15 +81,31 @@ function paintFavorites(nameFav, imageFav, idFav) {
     serieFavEl.appendChild(deleteEl);
     favoriteSeriesEl.appendChild(serieFavEl);
 
-    deleteEl.addEventListener('click', deleteSerieFav);
-    deleteEl.addEventListener('click', function() {
-        deleteObjOfArray(savedFavSeriesArr, idFav);
-    });
+    deleteEl.addEventListener('click', handleSerieFavClick);
+}
+
+function handleSerieFavClick(e, array) {
+    const { currentTarget } = e;
+    const { parentElement } = currentTarget;
+    const id = parentElement.getAttribute('data-id');
+    array = favoriteArr;
+
+    for (let i = 0; i < array.length; i++) {
+        if(id === array[i].id) {
+            console.log(array[i].id);
+            
+            array.splice(i, 1);
+        }
+    }
+    console.log(array);
+    
+    deleteSerieFav(currentTarget);
+    // deleteObjOfArray(savedFavSeriesArr, idFav);
 }
 
 function deleteSerieFav(e) {
-    const serieToDelete = e.currentTarget.parentElement;
-    serieToDelete.outerHTML = '';
+    const { parentElement } = e;
+    parentElement.outerHTML = '';
 }
 
 function deleteObjOfArray(array, id) {
@@ -97,7 +114,8 @@ function deleteObjOfArray(array, id) {
             array.splice(i, 1);
         }
     }
-    savedLocalStorage(array);
+    savedLocalStorage();
+    console.log(array);
 }
 
 function createBtnDeleteAll() {
@@ -133,6 +151,7 @@ function paintSeries(name, image, id) {
     titleSerieEl.appendChild(titleSerie);
 
     const imageSerieEl = createElement('img');
+    imageSerieEl.classList.add('search__img');
     imageSerieEl.setAttribute('src', image);
     imageSerieEl.alt = `Portada serie "${name}"`;
 
@@ -140,26 +159,27 @@ function paintSeries(name, image, id) {
     serieEl.appendChild(titleSerieEl);
     listSeriesEl.appendChild(serieEl);
 
-    serieEl.addEventListener('click', function() {
-        selectedFavoriteSerie(serieEl);
-    });
-    serieEl.addEventListener('click', function() {
-        savedArrayFavorites(name, image, id);
-    });
-    serieEl.addEventListener('click', function() {
-        savedLocalStorage(favoriteArr);
-    });
+    serieEl.addEventListener('click', handleSerieClick);
+}
+
+
+function handleSerieClick(e) {
+    const {currentTarget} = e;
+    const { id } = currentTarget.dataset;
+
+    selectedFavoriteSerie(currentTarget);
+    savedArrayFavorites(id, currentTarget);
+    savedLocalStorage(favoriteArr);
 }
 
 function reloadPage() {
-    if(savedFavSeriesArr) {
-        for (const data of savedFavSeriesArr) {
-            paintFavorites(data.name, data.image, data.id);
+    if(favoriteArr) {
+        for (const data of favoriteArr) {
+            paintFavorites(data);
         }
         createBtnDeleteAll();
     }
 }
-
 reloadPage();
 
 function handleButtonClick(e) {
